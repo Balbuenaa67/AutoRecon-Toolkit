@@ -4,3 +4,6 @@ __pycache__/
 .vscode/
 reports/*
 !reports/.gitkeep
+*.egg-info/
+build/
+dist/
