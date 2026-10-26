@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   test:
-    name: Run pytest
+    name: Test Python package
     runs-on: ubuntu-latest
 
     steps:
@@ -24,10 +24,17 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install test dependencies
+      - name: Install project
         run: |
           python -m pip install --upgrade pip
-          python -m pip install pytest
+          python -m pip install -e ".[dev]"
 
-      - name: Run tests
+      - name: Verify CLI
+        run: autorecon --help
+
+      - name: Test XML import and JSON export
+        run: |
+          autorecon --xml tests/sample_nmap.xml --format both --output reports/ci
+
+      - name: Run automated tests
         run: python -m pytest -v
