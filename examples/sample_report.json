@@ -1,0 +1,48 @@
+{
+    "metadata": {
+        "tool": "AutoRecon Toolkit",
+        "generated_at": "2026-10-26T18:41:30"
+    },
+    "hosts": [
+        {
+            "ip": "192.168.56.101",
+            "status": "up",
+            "ports": [
+                {
+                    "port": 22,
+                    "protocol": "tcp",
+                    "service": "ssh",
+                    "product": "OpenSSH",
+                    "version": "9.6"
+                },
+                {
+                    "port": 80,
+                    "protocol": "tcp",
+                    "service": "http",
+                    "product": "Apache httpd",
+                    "version": "2.4"
+                }
+            ]
+        }
+    ],
+    "analysis": {
+        "total_hosts": 1,
+        "total_open_ports": 2,
+        "findings": [
+            {
+                "ip": "192.168.56.101",
+                "port": 22,
+                "protocol": "tcp",
+                "service": "ssh",
+                "recommendation": "Review SSH configuration, authentication methods and exposed version."
+            },
+            {
+                "ip": "192.168.56.101",
+                "port": 80,
+                "protocol": "tcp",
+                "service": "http",
+                "recommendation": "Enumerate web technologies, directories, headers and authentication."
+            }
+        ]
+    }
+}
