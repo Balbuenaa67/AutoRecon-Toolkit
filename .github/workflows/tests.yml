@@ -35,6 +35,18 @@ jobs:
       - name: Test XML import and JSON export
         run: |
           autorecon --xml tests/sample_nmap.xml --format both --output reports/ci
+      
+      - name: Install Nmap
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nmap
+
+      - name: Test localhost scanning
+        run: |
+          autorecon --target 127.0.0.1 --profile quick --format both --output reports/linux-scan
+          test -n "$(find reports/linux-scan -name '*.xml' -print -quit)"
+          test -n "$(find reports/linux-scan -name '*.md' -print -quit)"
+          test -n "$(find reports/linux-scan -name '*.json' -print -quit)"
 
       - name: Run automated tests
         run: python -m pytest -v
