@@ -2,6 +2,7 @@
 import argparse
 import subprocess
 import sys
+from pathlib import Path
 
 from autorecon.scanner import run_nmap
 from autorecon.parser import parse_nmap_xml
@@ -13,10 +14,17 @@ def main():
         description="AutoRecon Toolkit - Network reconnaissance"
     )
 
-    parser.add_argument(
+    source = parser.add_mutually_exclusive_group(required=True)
+
+    source.add_argument(
         "--target",
-        required=True,
         help="Authorized target IP address"
+    )
+
+    source.add_argument(
+        "--xml",
+        type=Path,
+        help="Import an existing Nmap XML scan"
     )
 
     parser.add_argument(
@@ -27,20 +35,25 @@ def main():
     )
 
     parser.add_argument(
-    "--output",
-    default="reports",
-    help="Output directory for scan results (default: reports)"
-)
+        "--output",
+        default="reports",
+        help="Output directory (default: reports)"
+    )
 
     args = parser.parse_args()
 
     try:
-        xml_file = run_nmap(
-            target=args.target,
-            profile=args.profile,
-            output_dir=args.output
-        )
-        hosts = parse_nmap_xml(xml_file)
+        if args.xml:
+            xml_file = args.xml
+            print(f"Importing Nmap XML: {xml_file}")
+        else:
+            xml_file = run_nmap(
+                target=args.target,
+                profile=args.profile,
+                output_dir=args.output
+            )
+
+        hosts = parse_nmap_xml(str(xml_file))
 
         for host in hosts:
             print(f"\nHost: {host['ip']}")
@@ -57,15 +70,11 @@ def main():
             hosts,
             output_dir=args.output
         )
-        
+
         print(f"\nReport generated: {report_path}")
 
-    except ValueError as error:
-        print(f"Invalid target: {error}", file=sys.stderr)
-        sys.exit(1)
-
-    except FileNotFoundError:
-        print("Error: Nmap executable not found.", file=sys.stderr)
+    except (ValueError, FileNotFoundError) as error:
+        print(f"Error: {error}", file=sys.stderr)
         sys.exit(1)
 
     except subprocess.TimeoutExpired:
