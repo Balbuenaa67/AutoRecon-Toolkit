@@ -2,6 +2,7 @@
 import argparse
 import subprocess
 import sys
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from autorecon.scanner import run_nmap
@@ -89,6 +90,9 @@ def main():
             )
             print(f"\nJSON report: {json_path}")
 
+    except ET.ParseError as error:
+        print(f"Error: Invalid or malformed XML file: {error}", file=sys.stderr)
+        sys.exit(1)
 
     except (ValueError, FileNotFoundError) as error:
         print(f"Error: {error}", file=sys.stderr)
