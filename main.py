@@ -26,10 +26,20 @@ def main():
         help="Scan profile (default: quick)"
     )
 
+    parser.add_argument(
+    "--output",
+    default="reports",
+    help="Output directory for scan results (default: reports)"
+)
+
     args = parser.parse_args()
 
     try:
-        xml_file = run_nmap(args.target, args.profile)
+        xml_file = run_nmap(
+            target=args.target,
+            profile=args.profile,
+            output_dir=args.output
+        )
         hosts = parse_nmap_xml(xml_file)
 
         for host in hosts:
@@ -43,7 +53,11 @@ def main():
                     f"{port['product']} {port['version']}"
                 )
 
-        report_path = generate_report(hosts)
+        report_path = generate_report(
+            hosts,
+            output_dir=args.output
+        )
+        
         print(f"\nReport generated: {report_path}")
 
     except ValueError as error:
