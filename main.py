@@ -106,6 +106,14 @@ def main():
         print(f"Nmap execution failed: {error}", file=sys.stderr)
         sys.exit(1)
 
+    
+    except OSError as error:
+        print(
+            f"Error: File system or execution error: {error}",
+            file=sys.stderr
+        )
+        sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

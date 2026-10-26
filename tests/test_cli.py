@@ -113,3 +113,44 @@ def test_cli_target_scan(monkeypatch, tmp_path):
         profile="standard",
         output_dir=str(tmp_path),
     )
+
+
+
+def test_cli_report_permission_error(monkeypatch, tmp_path, capsys):
+    """Verify that report write errors are handled gracefully."""
+    with patch(
+        "main.generate_report",
+        side_effect=PermissionError("Access denied"),
+    ):
+        with pytest.raises(SystemExit) as error:
+            run_cli(
+                monkeypatch,
+                [
+                    "--xml", str(SAMPLE_XML),
+                    "--format", "markdown",
+                    "--output", str(tmp_path),
+                ],
+            )
+
+    assert error.value.code == 1
+    assert "Access denied" in capsys.readouterr().err
+
+
+def test_cli_json_permission_error(monkeypatch, tmp_path, capsys):
+    """Verify that JSON export errors are handled gracefully."""
+    with patch(
+        "main.export_json",
+        side_effect=PermissionError("Access denied"),
+    ):
+        with pytest.raises(SystemExit) as error:
+            run_cli(
+                monkeypatch,
+                [
+                    "--xml", str(SAMPLE_XML),
+                    "--format", "json",
+                    "--output", str(tmp_path),
+                ],
+            )
+
+    assert error.value.code == 1
+    assert "Access denied" in capsys.readouterr().err
