@@ -156,8 +156,11 @@ AutoRecon Toolkit is intended exclusively for systems and networks where explici
 
 The toolkit performs reconnaissance and provides enumeration guidance. It does not automatically exploit vulnerabilities or establish that detected services are insecure.
 
-## Development Status
+## Release Status
 
-Version 0.1.0 — Development release.
+**Version 1.0.0 — Stable Release**
 
-The project is being developed incrementally, with functionality and automated tests added through separate Git commits.
+AutoRecon Toolkit supports Nmap scanning, XML import, service analysis,
+Markdown and JSON reporting, and automated testing on Windows and Ubuntu.
+
+The project will continue receiving improvements and new features.
