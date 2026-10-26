@@ -7,6 +7,7 @@ from pathlib import Path
 from autorecon.scanner import run_nmap
 from autorecon.parser import parse_nmap_xml
 from autorecon.reporter import generate_report
+from autorecon.exporter import export_json
 
 
 def main():
@@ -40,6 +41,13 @@ def main():
         help="Output directory (default: reports)"
     )
 
+    parser.add_argument(
+        "--format",
+        choices=["markdown", "json", "both"],
+        default="markdown",
+        help="Report format (default: markdown)"
+    )
+
     args = parser.parse_args()
 
     try:
@@ -66,12 +74,21 @@ def main():
                     f"{port['product']} {port['version']}"
                 )
 
-        report_path = generate_report(
-            hosts,
-            output_dir=args.output
-        )
+        
+        if args.format in ("markdown", "both"):
+            report_path = generate_report(
+                hosts,
+                output_dir=args.output
+            )
+            print(f"\nMarkdown report: {report_path}")
 
-        print(f"\nReport generated: {report_path}")
+        if args.format in ("json", "both"):
+            json_path = export_json(
+                hosts,
+                output_dir=args.output
+            )
+            print(f"\nJSON report: {json_path}")
+
 
     except (ValueError, FileNotFoundError) as error:
         print(f"Error: {error}", file=sys.stderr)
